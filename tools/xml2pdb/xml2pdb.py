@@ -1,13 +1,13 @@
 import xml.etree.ElementTree as ET
 
 manufacturerId = "M-00A6"
-catalogNumber = "4"
-catalogItemNumber = "1"
-serialNumber = "00000003"
-versionNumber = "1"
-orderNumber = "00001152"
-applicationNumber = "3"
-applicationVersion = "0"
+catalogNumber = "6"
+catalogItemNumber = "2"
+serialNumber = "00000004"
+versionNumber = "4"
+orderNumber = "00001153"
+applicationNumber = "4"
+applicationVersion = "2"
 
 # "M-00A6_CS-4"
 catalogSectionId = manufacturerId + "_CS-" + catalogNumber
@@ -37,6 +37,35 @@ def indent(elem, level=0):
 		if level and (not elem.tail or not elem.tail.strip()):
 			elem.tail = i
 
+def addTranslations(languagesXML, itemsXML, refId, tagName):
+	for itemXML in itemsXML:
+		countryCode = itemXML.get("{http://www.w3.org/XML/1998/namespace}lang")
+		translation = itemXML.text
+
+		languageXML = languagesXML.find("*[@Identifier='" + countryCode + "']")
+		
+		if languageXML is None:
+			languageXML = ET.SubElement(languagesXML, "Language")
+			languageXML.set("Identifier", countryCode)
+
+		translationUnitXML = languageXML.find("*[@RefId='" + refId + "']")
+	
+		if translationUnitXML is None:
+			translationUnitXML = ET.SubElement(languageXML, "TranslationUnit")
+			translationUnitXML.set("RefId", refId)
+	
+		translationElementXML = translationUnitXML.find("*[@RefId='" + refId + "']")
+
+		if translationElementXML is None:
+			translationElementXML = ET.SubElement(translationUnitXML, "TranslationElement")
+			translationElementXML.set("RefId", refId)
+	
+		translationXML = ET.SubElement(translationElementXML, "Translation")
+		translationXML.set("AttributeName", tagName)
+		translationXML.set("Text", translation)
+
+	return
+
 def createRootNode():
 	rootXML = ET.Element("KNX")
 
@@ -49,6 +78,8 @@ def createRootNode():
 	return rootXML
 
 def createCatalog(srcRootXML):
+	languagesXML = ET.Element("Languages")
+	srcDeviceXML = srcRootXML.find("info")
 	dstRootXML = createRootNode()
 
 	manufacturerDataXML = ET.SubElement(dstRootXML, "ManufacturerData")
@@ -61,6 +92,7 @@ def createCatalog(srcRootXML):
 	catalogSectionXML = ET.SubElement(catalogXML, "CatalogSection")
 	catalogSectionXML.set("Id", catalogSectionId)
 	catalogSectionXML.set("Name", "Power Supplies")
+	addTranslations(languagesXML, srcDeviceXML.findall("category"), catalogSectionId, "Name")
 	catalogSectionXML.set("Number", catalogNumber)
 	catalogSectionXML.set("VisibleDescription", "")
 	catalogSectionXML.set("DefaultLanguage", "de-DE")
@@ -69,6 +101,7 @@ def createCatalog(srcRootXML):
 	catalogItemXML = ET.SubElement(catalogSectionXML, "CatalogItem")
 	catalogItemXML.set("Id", catalogItemId)
 	catalogItemXML.set("Name", "KNX-Netzteil2")
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "Name")
 	catalogItemXML.set("Number", catalogItemNumber)
 	# According to spec: VisibleDescription. Missing?
 	catalogItemXML.set("ProductRefId", productId)
@@ -76,34 +109,13 @@ def createCatalog(srcRootXML):
 	catalogItemXML.set("DefaultLanguage", "de-DE")
 	catalogItemXML.set("NonRegRelevantDataVersion", "0")
 
-	languagesXML = ET.SubElement(manufacturerXML, "Languages")
-
-	languageXML = ET.SubElement(languagesXML, "Language")
-	languageXML.set("Identifier", "de-DE")
-
-	translationUnitXML = ET.SubElement(languageXML, "TranslationUnit")
-	translationUnitXML.set("RefId", catalogSectionId)
-
-	translationElementXML = ET.SubElement(translationUnitXML, "TranslationElement")
-	translationElementXML.set("RefId", catalogSectionId)
-
-	translationXML = ET.SubElement(translationElementXML, "Translation")
-	translationXML.set("AttributeName", "Name")
-	translationXML.set("Text", "Power Supplies")
-
-	translationUnitXML = ET.SubElement(languageXML, "TranslationUnit")
-	translationUnitXML.set("RefId", catalogItemId)
-	
-	translationElementXML = ET.SubElement(translationUnitXML, "TranslationElement")
-	translationElementXML.set("RefId", catalogItemId)
-	
-	translationXML = ET.SubElement(translationElementXML, "Translation")
-	translationXML.set("AttributeName", "Name")
-	translationXML.set("Text", "KNX-Netzteil2")
+	manufacturerXML.append(languagesXML)
 
 	return dstRootXML
 
 def createHardware(srcRootXML):
+	languagesXML = ET.Element("Languages")
+	srcDeviceXML = srcRootXML.find("info")
 	dstRootXML = createRootNode()
 	
 	manufacturerDataXML = ET.SubElement(dstRootXML, "ManufacturerData")
@@ -139,10 +151,12 @@ def createHardware(srcRootXML):
 	productXML = ET.SubElement(productsXML, "Product")
 	productXML.set("Id", productId)
 	productXML.set("Text", "KNX-Netzteil")
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "Name")
 	productXML.set("OrderNumber", orderNumber)
 	productXML.set("IsRailMounted", "1")
 	productXML.set("WidthInMillimeter", "1.0500000e+002")
 	productXML.set("VisibleDescription", "KNX-Netzteil")
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "VisibleDescription")
 	productXML.set("DefaultLanguage", "de-DE")
 	productXML.set("Hash", "")
 	productXML.set("NonRegRelevantDataVersion", "0")
@@ -167,24 +181,7 @@ def createHardware(srcRootXML):
 	registrationInfoXML.set("RegistrationStatus", "Registered")
 	registrationInfoXML.set("RegistrationSignature", "")
 
-	languagesXML = ET.SubElement(manufacturerXML, "Languages")
-	
-	languageXML = ET.SubElement(languagesXML, "Language")
-	languageXML.set("Identifier", "de-DE")
-	
-	translationUnitXML = ET.SubElement(languageXML, "TranslationUnit")
-	translationUnitXML.set("RefId", productId)
-	
-	translationElementXML = ET.SubElement(translationUnitXML, "TranslationElement")
-	translationElementXML.set("RefId", productId)
-	
-	translationXML = ET.SubElement(translationElementXML, "Translation")
-	translationXML.set("AttributeName", "Text")
-	translationXML.set("Text", "KNX-Netzteil")
-
-	translationXML = ET.SubElement(translationElementXML, "Translation")
-	translationXML.set("AttributeName", "VisibleDescription")
-	translationXML.set("Text", "KNX-Netzteil")
+	manufacturerXML.append(languagesXML)
 
 	return dstRootXML
 
@@ -398,15 +395,20 @@ def createProduct(srcRootXML):
 	parameterBlockXML.set("Id", parameterBlockId)
 	parameterBlockXML.set("Name", "General")
 	parameterBlockXML.set("Text", "General Settings")
-	# FIXME: Check other parameters here
+	# According to spec: Access. Missing?
+	# According to spec: Help Topic ID. Missing?
 
 	parameterRefRefXML = ET.SubElement(parameterBlockXML, "ParameterRefRef")
 	parameterRefRefXML.set("RefId", parameterRefId)
-	# FIXME: Check other parameters here
 
 	chooseXML = ET.SubElement(parameterBlockXML, "choose")
 	chooseXML.set("ParamRefId", parameterRefId)
-	# FIXME: Check other parameters here
+
+	whenXML = ET.SubElement(chooseXML, "when")
+	whenXML.set("test", "1")
+
+	comObjectRefRefXML = ET.SubElement(whenXML, "ComObjectRefRef")
+	comObjectRefRefXML.set("RefId", "<id>")
 
 #		<ParameterRefRef RefId="M-0083_A-00D7-10-E034_P-3_R-3" />
 #		<choose ParamRefId="M-0083_A-00D7-10-E034_P-3_R-3">
@@ -428,14 +430,14 @@ catalogTree.write("Catalog.xml", "utf-8", True)
 hardwareXML = createHardware(root)
 
 indent(hardwareXML)
-#ET.dump(hardwareXML)
+ET.dump(hardwareXML)
 hardwareTree = ET.ElementTree(hardwareXML)
 hardwareTree.write("Hardware.xml", "utf-8", True)
 
 productXML = createProduct(root)
 
 indent(productXML)
-ET.dump(productXML)
+#ET.dump(productXML)
 productTree = ET.ElementTree(productXML)
 productTree.write(applicationProgramId + ".xml", "utf-8", True)
 
