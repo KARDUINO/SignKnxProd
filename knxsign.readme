@@ -1,0 +1,17 @@
+deutsch:
+
+1. Code in eine Datei kopieren und auf der Platte speichern (z.B. als knxsign.cs)
+2. Pfad zum csc.exe (C# Compiler) finden. Da die ETS auf C# basiert, ist der Compiler bereits installiert. Typischerweise in C:\Windows\Microsoft.NET\Framework\v4.0.30319, je nach Framework/Windows Version ist der Pfad anders oder Version eine andere. Zur Not also nach csc.exe suchen
+3. Program compilieren: <pfad>\csc.exe knxsign.cs
+4. knxsign starten: knxsign.exe <pfad zur ETS Installation> <Pfad in dem sich die zu signierenden Files befinden>
+
+Warnung: Dieses Tool könnte gegen die Lizenzbestimmungen der KNX/ETS verstoßen. Benutzung auf eigene Gefahr.
+
+english:
+
+1. Copy code into a file and save to disk (e.g. knxsign.cs)
+2. Find path to csc.exe (C# compiler). As ETS is based in C#, the compiler is already installed. Typically in C:\Windows\Microsoft.NET\Framework\v4.0.30319, dependend on framework/windows version, the path or version might be different. You can also search for csc.exe on your disk.
+3. Compile program: <path>\csc.exe knxsign.cs
+4. start knxsign: knxsign.exe <path to your ETS installation> <path to files to be signed>
+
+Warning: This tool might violate the KNX/ETS license terms. Use at own risk.
