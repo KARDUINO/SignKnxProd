@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ET
 
-manufacturerId = "M-00A6"
+manufacturerId = "M-00A5"
 catalogNumber = "6"
 catalogItemNumber = "2"
 serialNumber = "00000004"
@@ -91,7 +91,7 @@ def createCatalog(srcRootXML):
 
 	catalogSectionXML = ET.SubElement(catalogXML, "CatalogSection")
 	catalogSectionXML.set("Id", catalogSectionId)
-	catalogSectionXML.set("Name", "Power Supplies")
+	catalogSectionXML.set("Name", srcDeviceXML.find("category").text)
 	addTranslations(languagesXML, srcDeviceXML.findall("category"), catalogSectionId, "Name")
 	catalogSectionXML.set("Number", catalogNumber)
 	catalogSectionXML.set("VisibleDescription", "")
@@ -100,8 +100,8 @@ def createCatalog(srcRootXML):
 
 	catalogItemXML = ET.SubElement(catalogSectionXML, "CatalogItem")
 	catalogItemXML.set("Id", catalogItemId)
-	catalogItemXML.set("Name", "KNX-Netzteil2")
-	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "Name")
+	catalogItemXML.set("Name", srcDeviceXML.find("name").text)
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogItemId, "Name")
 	catalogItemXML.set("Number", catalogItemNumber)
 	# According to spec: VisibleDescription. Missing?
 	catalogItemXML.set("ProductRefId", productId)
@@ -127,10 +127,10 @@ def createHardware(srcRootXML):
 
 	hardwareXML = ET.SubElement(hardwaresXML, "Hardware")
 	hardwareXML.set("Id", hardwareId)
-	hardwareXML.set("Name", "KNX-Netzteil")
+	hardwareXML.set("Name", srcDeviceXML.find("name").text)
 	hardwareXML.set("SerialNumber", serialNumber)
 	hardwareXML.set("VersionNumber", versionNumber)
-	# According to spec: Bus Current. Missing?
+	hardwareXML.set("BusCurrent", "0")
 	hardwareXML.set("IsAccessory", "0")
 	hardwareXML.set("HasIndividualAddress", "1")
 	hardwareXML.set("HasApplicationProgram", "1")
@@ -150,12 +150,12 @@ def createHardware(srcRootXML):
 
 	productXML = ET.SubElement(productsXML, "Product")
 	productXML.set("Id", productId)
-	productXML.set("Text", "KNX-Netzteil")
+	productXML.set("Text", srcDeviceXML.find("name").text)
 	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "Name")
 	productXML.set("OrderNumber", orderNumber)
 	productXML.set("IsRailMounted", "1")
 	productXML.set("WidthInMillimeter", "1.0500000e+002")
-	productXML.set("VisibleDescription", "KNX-Netzteil")
+	productXML.set("VisibleDescription", srcDeviceXML.find("name").text)
 	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "VisibleDescription")
 	productXML.set("DefaultLanguage", "de-DE")
 	productXML.set("Hash", "")
@@ -186,6 +186,8 @@ def createHardware(srcRootXML):
 	return dstRootXML
 
 def createProduct(srcRootXML):
+	languagesXML = ET.Element("Languages")
+	srcDeviceXML = srcRootXML.find("info")
 	dstRootXML = createRootNode()
 	
 	manufacturerDataXML = ET.SubElement(dstRootXML, "ManufacturerData")
@@ -202,7 +204,7 @@ def createProduct(srcRootXML):
 	applicationProgramXML.set("ProgramType", "ApplicationProgram")
 	applicationProgramXML.set("MaskVersion", "MV-0705")
 	# According to spec: Visible Description. Missing?
-	applicationProgramXML.set("Name", "KNX-Netzteil")
+	applicationProgramXML.set("Name", srcDeviceXML.find("name").text)
 	applicationProgramXML.set("LoadProcedureStyle", "DefaultProcedure")
 	applicationProgramXML.set("PeiType", "0")
 	# According to spec: Serial Number. Missing?
@@ -367,12 +369,12 @@ def createProduct(srcRootXML):
 	comObjectRefXML.set("Tag", comObjectRefTag)
 
 	addressTableXML = ET.SubElement(staticXML, "AddressTable")
-	addressTableXML.set("CodeSegment", "M-00A6_A-0003-00-0FC5_AS-4000")
+	addressTableXML.set("CodeSegment", applicationProgramId + "_AS-4000")
 	addressTableXML.set("Offset", "0")
 	addressTableXML.set("MaxEntries", "200")
 
 	associationTableXML = ET.SubElement(staticXML, "AssociationTable")
-	associationTableXML.set("CodeSegment", "M-00A6_A-0003-00-0FC5_AS-4193")
+	associationTableXML.set("CodeSegment", applicationProgramId + "_AS-4193")
 	associationTableXML.set("Offset", "0")
 	associationTableXML.set("MaxEntries", "200")
 
@@ -401,20 +403,22 @@ def createProduct(srcRootXML):
 	parameterRefRefXML = ET.SubElement(parameterBlockXML, "ParameterRefRef")
 	parameterRefRefXML.set("RefId", parameterRefId)
 
-	chooseXML = ET.SubElement(parameterBlockXML, "choose")
-	chooseXML.set("ParamRefId", parameterRefId)
+	#chooseXML = ET.SubElement(parameterBlockXML, "choose")
+	#chooseXML.set("ParamRefId", parameterRefId)
 
-	whenXML = ET.SubElement(chooseXML, "when")
-	whenXML.set("test", "1")
+	#whenXML = ET.SubElement(chooseXML, "when")
+	#whenXML.set("test", "1")
 
-	comObjectRefRefXML = ET.SubElement(whenXML, "ComObjectRefRef")
-	comObjectRefRefXML.set("RefId", "<id>")
+	#comObjectRefRefXML = ET.SubElement(whenXML, "ComObjectRefRef")
+	#comObjectRefRefXML.set("RefId", "<id>")
 
 #		<ParameterRefRef RefId="M-0083_A-00D7-10-E034_P-3_R-3" />
 #		<choose ParamRefId="M-0083_A-00D7-10-E034_P-3_R-3">
 #			<when test="1">
 #				<ComObjectRefRef RefId="M-0083_A-00D7-10-E034_O-63_R-64" />
- 
+
+	#manufacturerXML.append(languagesXML)
+
 	return dstRootXML
 
 tree = ET.parse('testdev.xml')
@@ -430,16 +434,13 @@ catalogTree.write("Catalog.xml", "utf-8", True)
 hardwareXML = createHardware(root)
 
 indent(hardwareXML)
-ET.dump(hardwareXML)
+#ET.dump(hardwareXML)
 hardwareTree = ET.ElementTree(hardwareXML)
 hardwareTree.write("Hardware.xml", "utf-8", True)
 
 productXML = createProduct(root)
 
 indent(productXML)
-#ET.dump(productXML)
+ET.dump(productXML)
 productTree = ET.ElementTree(productXML)
 productTree.write(applicationProgramId + ".xml", "utf-8", True)
-
-#deviceXML = srcRootXML.find("info")
-#deviceName = deviceXML.find("name").text;
