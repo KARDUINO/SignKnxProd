@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<device>
+	<info>
+		<name>Device Name</name>
+	</info>
+	<parameters>
+		<parameter>
+			<name>Parameter 1</name>
+		</parameter>
+		<parameter>
+			<name>Parameter 2</name>
+		</parameter>
+	</parameters>
+</device>
