@@ -5,6 +5,7 @@ deutsch:
 3. Program compilieren: <pfad>\csc.exe knxsign.cs
 4. knxsign starten: knxsign.exe <pfad zur ETS Installation> <Pfad in dem sich die zu signierenden Files befinden>
 
+Hinweis: Bitte frage nicht nach einem vor-compilierten Tool. Für die Erstellung bist du selbst verantworltlich.
 Warnung: Dieses Tool könnte gegen die Lizenzbestimmungen der KNX/ETS verstoßen. Benutzung auf eigene Gefahr.
 
 english:
@@ -14,4 +15,5 @@ english:
 3. Compile program: <path>\csc.exe knxsign.cs
 4. start knxsign: knxsign.exe <path to your ETS installation> <path to files to be signed>
 
+Note: Don't ask for a prebuild-binary. You have to create it on your own. 
 Warning: This tool might violate the KNX/ETS license terms. Use at own risk.
