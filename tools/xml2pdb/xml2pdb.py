@@ -417,7 +417,7 @@ def createProduct(srcRootXML):
 #			<when test="1">
 #				<ComObjectRefRef RefId="M-0083_A-00D7-10-E034_O-63_R-64" />
 
-	#manufacturerXML.append(languagesXML)
+	manufacturerXML.append(languagesXML)
 
 	return dstRootXML
 
