@@ -388,15 +388,15 @@ def createProduct(srcRootXML):
 	channelId = applicationProgramId + "_CH-" + channelNumber
 	channelXML = ET.SubElement(dynamicXML, "Channel")
 	channelXML.set("Id", channelId)
-	channelXML.set("Name", "Generic")
-	channelXML.set("Text", "")
+	channelXML.set("Name", "Channel Name")
+	channelXML.set("Text", "Channel Text")
 	channelXML.set("Number", channelNumber)
 
 	parameterBlockId = applicationProgramId + "_PB-1"
 	parameterBlockXML = ET.SubElement(channelXML, "ParameterBlock")
 	parameterBlockXML.set("Id", parameterBlockId)
-	parameterBlockXML.set("Name", "General")
-	parameterBlockXML.set("Text", "General Settings")
+	parameterBlockXML.set("Name", "ParameterBlock Name")
+	parameterBlockXML.set("Text", "ParameterBlock Text")
 	# According to spec: Access. Missing?
 	# According to spec: Help Topic ID. Missing?
 
@@ -409,8 +409,9 @@ def createProduct(srcRootXML):
 	#whenXML = ET.SubElement(chooseXML, "when")
 	#whenXML.set("test", "1")
 
+	comObjectRefRefXML = ET.SubElement(parameterBlockXML, "ComObjectRefRef")
 	#comObjectRefRefXML = ET.SubElement(whenXML, "ComObjectRefRef")
-	#comObjectRefRefXML.set("RefId", "<id>")
+	comObjectRefRefXML.set("RefId", comObjectRefId)
 
 #		<ParameterRefRef RefId="M-0083_A-00D7-10-E034_P-3_R-3" />
 #		<choose ParamRefId="M-0083_A-00D7-10-E034_P-3_R-3">
