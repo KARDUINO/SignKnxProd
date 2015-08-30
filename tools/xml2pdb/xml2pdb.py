@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import iso9075
 
 manufacturerId = "M-00A5"
 catalogNumber = "6"
@@ -65,6 +66,27 @@ def addTranslations(languagesXML, itemsXML, refId, tagName):
 		translationXML.set("Text", translation)
 
 	return
+
+def addParameterBlock(parentXML, parameterBlockIdx, name, text):
+	parameterBlockId = applicationProgramId + "_PB-%d" % parameterBlockIdx
+	parameterBlockXML = ET.SubElement(parentXML, "ParameterBlock")
+	parameterBlockXML.set("Id", parameterBlockId)
+	parameterBlockXML.set("Name", name)
+	parameterBlockXML.set("Text", text)
+	# According to spec: Access. Missing?
+	# According to spec: Help Topic ID. Missing?
+
+	return parameterBlockXML
+
+def addChannel(parentXML, channelIdx, name):
+	channelId = applicationProgramId + "_CH-%d" % channelIdx
+	channelXML = ET.SubElement(parentXML, "Channel")
+	channelXML.set("Id", channelId)
+	channelXML.set("Name", name)
+	channelXML.set("Text", name)
+	channelXML.set("Number", str(channelIdx))
+
+	return channelXML
 
 def createRootNode():
 	rootXML = ET.Element("KNX")
@@ -228,6 +250,18 @@ def createProduct(srcRootXML):
 	staticXML = ET.SubElement(applicationProgramXML, "Static")
 
 	codeXML = ET.SubElement(staticXML, "Code")
+	parameterTypesXML = ET.SubElement(staticXML, "ParameterTypes")
+	parametersXML = ET.SubElement(staticXML, "Parameters")
+	parameterRefsXML = ET.SubElement(staticXML, "ParameterRefs")
+	comObjectTableXML = ET.SubElement(staticXML, "ComObjectTable")
+	comObjectRefsXML = ET.SubElement(staticXML, "ComObjectRefs")
+	addressTableXML = ET.SubElement(staticXML, "AddressTable")
+	associationTableXML = ET.SubElement(staticXML, "AssociationTable")
+	loadProceduresXML = ET.SubElement(staticXML, "LoadProcedures")
+	extensionXML = ET.SubElement(staticXML, "Extension")
+	optionsXML = ET.SubElement(staticXML, "Options")
+
+	dynamicXML = ET.SubElement(applicationProgramXML, "Dynamic")
 
 	absoluteSegmentAddr = "16384"
 	absoluteSegmentId = applicationProgramId + "_AS-" + "%04X" % int(absoluteSegmentAddr)
@@ -259,164 +293,160 @@ def createProduct(srcRootXML):
 	#maskXML = ET.SubElement(absoluteSegmentXML, "Mask")
 	#maskXML.text = ""
 
-	parameterTypesXML = ET.SubElement(staticXML, "ParameterTypes")
-
-	parameterTypeName = "TestParType"
-	parameterTypeId = applicationProgramId + "_PT-" + parameterTypeName # FIXME: XML escaping required here!
-	parameterTypeXML = ET.SubElement(parameterTypesXML, "ParameterType")
-	parameterTypeXML.set("Id", parameterTypeId)
-	parameterTypeXML.set("Name", parameterTypeName)
-	parameterTypeXML.set("Plugin", "")
-
-	#typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
-	#typeRestrictionXML.set("Base", "Value")
-	#typeRestrictionXML.set("SizeInBit", "8")
-
-	#enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
-	#enumerationXML.set("Id", "")
-	#enumerationXML.set("DisplayOrder", "")
-	#enumerationXML.set("Text", "")
-	#enumerationXML.set("Value", "")
-
-	typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
-	typeNumberXML.set("SizeInBit", "8")
-	typeNumberXML.set("Type", "unsignedInt")
-	typeNumberXML.set("minInclusive", "0")
-	typeNumberXML.set("maxInclusive", "100")
-	typeNumberXML.set("SizeInBit", "8")
-	# According to spec: UIHint. Missing?
-
-	parameterTypesXML = ET.SubElement(staticXML, "Parameters")
-
-	parameterId = applicationProgramId + "_P-" + "1"
-	parameterXML = ET.SubElement(parameterTypesXML, "Parameter")
-	parameterXML.set("Id", parameterId)
-	parameterXML.set("Name", "Param Name")
-	parameterXML.set("ParameterType", parameterTypeId)
-	parameterXML.set("Text", "Param Text")
-	# According to spec: SuffixText. Missing?
-	parameterXML.set("Access", "ReadWrite")
-	parameterXML.set("Value", "60")
-	# According to spec: Patch Always. Missing?
-	# According to spec: Unique Number. Missing?
-
-	#memoryXML = ET.SubElement(parameterXML, "Memory")
-	#memoryXML.set("CodeSegment", "")
-	#memoryXML.set("Offset", "0")
-	#memoryXML.set("BitOffset", "0")
-
-	propertyXML = ET.SubElement(parameterXML, "Property")
-	propertyXML.set("ObjectIndex", "0")
-	propertyXML.set("PropertyId", "0")
-	propertyXML.set("Offset", "0")
-	propertyXML.set("BitOffset", "0")
-
-	parameterRefsXML = ET.SubElement(staticXML, "ParameterRefs")
-
-	parameterRefId = parameterId + "_R-1"
-	parameterRefXML = ET.SubElement(parameterRefsXML, "ParameterRef")
-	parameterRefXML.set("Id", parameterRefId)
-	parameterRefXML.set("RefId", parameterId)
-	# According to spec: Text. Missing?
-	# According to spec: SuffixText. Missing?
-	# Obsolete! parameterRefXML.set("DisplayOrder", "1")
-	# According to spec: Access. Missing?
-	# According to spec: Default Value. Missing?
-	parameterRefXML.set("Tag", "1")
-
-	comObjectTableXML = ET.SubElement(staticXML, "ComObjectTable")
 	comObjectTableXML.set("CodeSegment", absoluteSegmentId)
 	comObjectTableXML.set("Offset", "0")
 
-	comObjectNumber = "0"
-	comObjectId = applicationProgramId + "_O-" + comObjectNumber
-	comObjectXML = ET.SubElement(comObjectTableXML, "ComObject")
-	comObjectXML.set("Id", comObjectId)
-	comObjectXML.set("Name", "Allgemein")
-	comObjectXML.set("Text", "Allgemein")
-	comObjectXML.set("Number", comObjectNumber)
-	comObjectXML.set("FunctionText", "Uhrzeit")
-	comObjectXML.set("Priority", "Low")
-	comObjectXML.set("ObjectSize", "3 Bytes")
-	comObjectXML.set("ReadFlag", "Disabled")
-	comObjectXML.set("WriteFlag", "Enabled")
-	comObjectXML.set("CommunicationFlag", "Enabled")
-	comObjectXML.set("TransmitFlag", "Enabled")
-	comObjectXML.set("UpdateFlag", "Enabled")
-	comObjectXML.set("ReadOnInitFlag", "Disabled")
-	comObjectXML.set("DatapointType", "DPST-10-1")
-	# Not in spec. Obsolete? comObjectXML.set("VisibleDescription", "")
+	srcChannelsXML = srcRootXML.find("channels")
+	parameterIdx = 0
+	channelIdx = -1
+	parameterBlockIdx = 0
 
-	comObjectRefsXML = ET.SubElement(staticXML, "ComObjectRefs")
+	for srcChannelXML in srcChannelsXML:
+		channelIdx += 1
+		channelXML = addChannel(dynamicXML, parameterBlockIdx, srcChannelXML.find("name").text)
 
-	comObjectRefTag = "1"
-	comObjectRefId = comObjectId + "_R-" + comObjectRefTag
-	comObjectRefXML = ET.SubElement(comObjectRefsXML, "ComObjectRef")
-	comObjectRefXML.set("Id", comObjectRefId)
-	comObjectRefXML.set("RefId", comObjectId)
-	# According to spec: Name. Missing?
-	# According to spec: Text. Missing?
-	# According to spec: Function Text. Missing?
-	# According to spec: Priority. Missing?
-	# According to spec: Object Size. Missing?
-	# According to spec: Read Flag. Missing?
-	# According to spec: Write Flag. Missing?
-	# According to spec: Communication Flag. Missing?
-	# According to spec: Transmit Flag. Missing?
-	# According to spec: Update Flag. Missing?
-	# According to spec: ReadOnInit Flag. Missing?
-	#comObjectRefXML.set("DatapointType", "DPST-10-1")
-	comObjectRefXML.set("Tag", comObjectRefTag)
+		parameterBlockIdx += 1
+		parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, "Parameter Block Name", "Parameter Block Text")
+	
+		srcParametersXML = srcChannelXML.find("parameters")
 
-	addressTableXML = ET.SubElement(staticXML, "AddressTable")
+		for srcEntryXML in srcParametersXML:
+			if srcEntryXML.tag == "parameter":
+				parameterTypeName = srcEntryXML.find("name").text
+				parameterTypeId = applicationProgramId + "_PT-" + parameterTypeName.encode('iso9075')
+				parameterTypeXML = ET.SubElement(parameterTypesXML, "ParameterType")
+				parameterTypeXML.set("Id", parameterTypeId)
+				parameterTypeXML.set("Name", parameterTypeName)
+				parameterTypeXML.set("Plugin", "")
+				
+				#typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
+				#typeRestrictionXML.set("Base", "Value")
+				#typeRestrictionXML.set("SizeInBit", "8")
+				
+				#enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
+				#enumerationXML.set("Id", "")
+				#enumerationXML.set("DisplayOrder", "")
+				#enumerationXML.set("Text", "")
+				#enumerationXML.set("Value", "")
+				
+				typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
+				typeNumberXML.set("SizeInBit", "8")
+				typeNumberXML.set("Type", "unsignedInt")
+				typeNumberXML.set("minInclusive", "0")
+				typeNumberXML.set("maxInclusive", "100")
+				typeNumberXML.set("SizeInBit", "8")
+				# According to spec: UIHint. Missing?
+				
+				parameterIdx = parameterIdx + 1
+				parameterId = applicationProgramId + "_P-%d" % parameterIdx
+				parameterXML = ET.SubElement(parametersXML, "Parameter")
+				parameterXML.set("Id", parameterId)
+				parameterXML.set("Name", srcEntryXML.find("name").text)
+				parameterXML.set("ParameterType", parameterTypeId)
+				parameterXML.set("Text", srcEntryXML.find("name").text)
+				# According to spec: SuffixText. Missing?
+				parameterXML.set("Access", "ReadWrite")
+				parameterXML.set("Value", "60")
+				# According to spec: Patch Always. Missing?
+				# According to spec: Unique Number. Missing?
+				
+				#memoryXML = ET.SubElement(parameterXML, "Memory")
+				#memoryXML.set("CodeSegment", "")
+				#memoryXML.set("Offset", "0")
+				#memoryXML.set("BitOffset", "0")
+				
+				#propertyXML = ET.SubElement(parameterXML, "Property")
+				#propertyXML.set("ObjectIndex", "0")
+				#propertyXML.set("PropertyId", "0")
+				#propertyXML.set("Offset", "0")
+				#propertyXML.set("BitOffset", "0")
+				
+				parameterRefId = parameterId + "_R-1"
+				parameterRefXML = ET.SubElement(parameterRefsXML, "ParameterRef")
+				parameterRefXML.set("Id", parameterRefId)
+				parameterRefXML.set("RefId", parameterId)
+				# According to spec: Text. Missing?
+				# According to spec: SuffixText. Missing?
+				# Obsolete! parameterRefXML.set("DisplayOrder", "1")
+				# According to spec: Access. Missing?
+				# According to spec: Default Value. Missing?
+				parameterRefXML.set("Tag", "1")
+			
+				parameterRefRefXML = ET.SubElement(parameterBlockXML, "ParameterRefRef")
+				parameterRefRefXML.set("RefId", parameterRefId)
+
+			elif srcEntryXML.tag == "divider":
+				print "Got divider!"
+			else:
+				print "Unknown tag: " + srcEntryXML.tag
+
+	srcParametersXML = srcRootXML.find("comObjects")
+	comObjectIdx = -1
+	comObjectRefIdx = 0
+
+	channelIdx += 1
+	channelXML = addChannel(dynamicXML, parameterBlockIdx, "Comm Channel Name")
+
+	parameterBlockIdx += 1
+	parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, "Comm Parameter Block Name", "Comm Parameter Block Text")
+
+	for srcEntryXML in srcParametersXML:
+		if srcEntryXML.tag == "comObject":
+
+			comObjectIdx += + 1
+			comObjectId = applicationProgramId + "_O-%d" % comObjectIdx
+			comObjectXML = ET.SubElement(comObjectTableXML, "ComObject")
+			comObjectXML.set("Id", comObjectId)
+			comObjectXML.set("Name", srcEntryXML.find("name").text)
+			comObjectXML.set("Text", srcEntryXML.find("name").text)
+			comObjectXML.set("Number", str(comObjectIdx))
+			comObjectXML.set("FunctionText", srcEntryXML.find("function").text)
+			comObjectXML.set("Priority", "Low")
+			comObjectXML.set("ObjectSize", "3 Bytes")
+			comObjectXML.set("ReadFlag", "Disabled")
+			comObjectXML.set("WriteFlag", "Enabled")
+			comObjectXML.set("CommunicationFlag", "Enabled")
+			comObjectXML.set("TransmitFlag", "Enabled")
+			comObjectXML.set("UpdateFlag", "Enabled")
+			comObjectXML.set("ReadOnInitFlag", "Disabled")
+			comObjectXML.set("DatapointType", "DPST-10-1")
+			# Not in spec. Obsolete? comObjectXML.set("VisibleDescription", "")
+			
+			comObjectRefIdx += 1
+			comObjectRefId = comObjectId + "_R-%d" % comObjectRefIdx
+			comObjectRefXML = ET.SubElement(comObjectRefsXML, "ComObjectRef")
+			comObjectRefXML.set("Id", comObjectRefId)
+			comObjectRefXML.set("RefId", comObjectId)
+			# According to spec: Name. Missing?
+			# According to spec: Text. Missing?
+			# According to spec: Function Text. Missing?
+			# According to spec: Priority. Missing?
+			# According to spec: Object Size. Missing?
+			# According to spec: Read Flag. Missing?
+			# According to spec: Write Flag. Missing?
+			# According to spec: Communication Flag. Missing?
+			# According to spec: Transmit Flag. Missing?
+			# According to spec: Update Flag. Missing?
+			# According to spec: ReadOnInit Flag. Missing?
+			#comObjectRefXML.set("DatapointType", "DPST-10-1")
+			comObjectRefXML.set("Tag", str(comObjectRefIdx))
+
+			comObjectRefRefXML = ET.SubElement(parameterBlockXML, "ComObjectRefRef")
+			comObjectRefRefXML.set("RefId", comObjectRefId)
+
 	addressTableXML.set("CodeSegment", applicationProgramId + "_AS-4000")
 	addressTableXML.set("Offset", "0")
 	addressTableXML.set("MaxEntries", "200")
 
-	associationTableXML = ET.SubElement(staticXML, "AssociationTable")
 	associationTableXML.set("CodeSegment", applicationProgramId + "_AS-4193")
 	associationTableXML.set("Offset", "0")
 	associationTableXML.set("MaxEntries", "200")
-
-	loadProceduresXML = ET.SubElement(staticXML, "LoadProcedures")
-	extensionXML = ET.SubElement(staticXML, "Extension")
-	optionsXML = ET.SubElement(staticXML, "Options")
-
-	dynamicXML = ET.SubElement(applicationProgramXML, "Dynamic")
-
-	channelNumber = "0"
-	channelId = applicationProgramId + "_CH-" + channelNumber
-	channelXML = ET.SubElement(dynamicXML, "Channel")
-	channelXML.set("Id", channelId)
-	channelXML.set("Name", "Channel Name")
-	channelXML.set("Text", "Channel Text")
-	channelXML.set("Number", channelNumber)
-
-	parameterBlockId = applicationProgramId + "_PB-1"
-	parameterBlockXML = ET.SubElement(channelXML, "ParameterBlock")
-	parameterBlockXML.set("Id", parameterBlockId)
-	parameterBlockXML.set("Name", "ParameterBlock Name")
-	parameterBlockXML.set("Text", "ParameterBlock Text")
-	# According to spec: Access. Missing?
-	# According to spec: Help Topic ID. Missing?
-
-	parameterRefRefXML = ET.SubElement(parameterBlockXML, "ParameterRefRef")
-	parameterRefRefXML.set("RefId", parameterRefId)
 
 	#chooseXML = ET.SubElement(parameterBlockXML, "choose")
 	#chooseXML.set("ParamRefId", parameterRefId)
 
 	#whenXML = ET.SubElement(chooseXML, "when")
 	#whenXML.set("test", "1")
-
-	comObjectRefRefXML = ET.SubElement(parameterBlockXML, "ComObjectRefRef")
-	#comObjectRefRefXML = ET.SubElement(whenXML, "ComObjectRefRef")
-	comObjectRefRefXML.set("RefId", comObjectRefId)
-
-#		<ParameterRefRef RefId="M-0083_A-00D7-10-E034_P-3_R-3" />
-#		<choose ParamRefId="M-0083_A-00D7-10-E034_P-3_R-3">
-#			<when test="1">
-#				<ComObjectRefRef RefId="M-0083_A-00D7-10-E034_O-63_R-64" />
 
 	manufacturerXML.append(languagesXML)
 

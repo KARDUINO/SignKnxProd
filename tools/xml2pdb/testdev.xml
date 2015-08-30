@@ -6,12 +6,37 @@
 		<category xml:lang="de-DE">Device category DE</category>
 		<category xml:lang="en-US">Device category US</category>
 	</info>
-	<parameters>
-		<parameter>
-			<name>Parameter 1</name>
-		</parameter>
-		<parameter>
-			<name>Parameter 2</name>
-		</parameter>
-	</parameters>
+	<channels>
+		<channel>
+			<name>Channel 1 Name</name>
+			<parameters>
+				<parameter>
+					<name>Parameter 1</name>
+				</parameter>
+				<divider>
+					<name>Divider 1</name>
+				</divider>
+				<parameter>
+					<name>Parameter 2</name>
+				</parameter>
+			</parameters>
+		</channel>
+		<channel>
+			<name>Channel 2 Name</name>
+			<parameters>
+				<parameter>
+					<name>Parameter 3</name>
+				</parameter>
+				<parameter>
+					<name>Parameter 4</name>
+				</parameter>
+			</parameters>
+		</channel>
+	</channels>
+	<comObjects>
+		<comObject>
+			<name>Object 1 Name</name>
+			<function>Object 1 Function</function>
+		</comObject>
+	</comObjects>
 </device>
