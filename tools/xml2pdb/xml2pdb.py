@@ -308,6 +308,7 @@ def createProduct(srcRootXML):
 
 	srcChannelsXML = srcRootXML.find("channels")
 	parameterIdx = 0
+	parameterSeparatorIdx = 0
 
 	for srcChannelXML in srcChannelsXML:
 		channelXML = addChannel(dynamicXML, srcChannelXML.find("name").text)
@@ -385,8 +386,18 @@ def createProduct(srcRootXML):
 					parameterRefRefXML = ET.SubElement(parameterBlockXML, "ParameterRefRef")
 					parameterRefRefXML.set("RefId", parameterRefId)
 
-				elif srcEntryXML.tag == "divider":
-					print "Got divider!"
+				elif srcEntryXML.tag == "parameterSeparator":
+					parameterSeparatorIdx += + 1
+					parameterSeparatorId = applicationProgramId + "_PS-%d" % parameterSeparatorIdx
+					parameterSeparatorXML = ET.SubElement(parameterBlockXML, "ParameterSeparator")
+					parameterSeparatorXML.set("Id", parameterSeparatorId)
+					parameterSeparatorText = srcEntryXML.find("text")
+					if parameterSeparatorText is None:
+						parameterSeparatorXML.set("Text", "")
+					else:
+						parameterSeparatorXML.set("Text", srcEntryXML.find("text").text)
+					# According to spec: Access. Missing?
+
 				else:
 					print "Unknown tag: " + srcEntryXML.tag
 

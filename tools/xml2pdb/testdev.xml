@@ -43,8 +43,15 @@
 						<parameter>
 							<name>Parameter 5</name>
 						</parameter>
+						<parameterSeparator>
+							<text>Separator Text</text>
+						</parameterSeparator>
 						<parameter>
 							<name>Parameter 6</name>
+						</parameter>
+						<parameterSeparator />
+						<parameter>
+							<name>Parameter 7</name>
 						</parameter>
 					</parameters>
 				</parameterBlock>
