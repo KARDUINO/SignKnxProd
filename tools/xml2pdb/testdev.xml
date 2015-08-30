@@ -9,34 +9,60 @@
 	<channels>
 		<channel>
 			<name>Channel 1 Name</name>
-			<parameters>
-				<parameter>
-					<name>Parameter 1</name>
-				</parameter>
-				<divider>
-					<name>Divider 1</name>
-				</divider>
-				<parameter>
-					<name>Parameter 2</name>
-				</parameter>
-			</parameters>
+			<parameterBlocks>
+				<parameterBlock>
+					<name>Parameter Block 1 Name</name>
+					<parameters>
+						<parameter>
+							<name>Parameter 1</name>
+						</parameter>
+						<parameter>
+							<name>Parameter 2</name>
+						</parameter>
+					</parameters>
+				</parameterBlock>
+				<parameterBlock>
+					<name>Parameter Block 2 Name</name>
+					<parameters>
+						<parameter>
+							<name>Parameter 3</name>
+						</parameter>
+						<parameter>
+							<name>Parameter 4</name>
+						</parameter>
+					</parameters>
+				</parameterBlock>
+			</parameterBlocks>
 		</channel>
 		<channel>
 			<name>Channel 2 Name</name>
-			<parameters>
-				<parameter>
-					<name>Parameter 3</name>
-				</parameter>
-				<parameter>
-					<name>Parameter 4</name>
-				</parameter>
-			</parameters>
+			<parameterBlocks>
+				<parameterBlock>
+					<name>Parameter Block 3 Name</name>
+					<parameters>
+						<parameter>
+							<name>Parameter 5</name>
+						</parameter>
+						<parameter>
+							<name>Parameter 6</name>
+						</parameter>
+					</parameters>
+				</parameterBlock>
+			</parameterBlocks>
 		</channel>
 	</channels>
 	<comObjects>
 		<comObject>
 			<name>Object 1 Name</name>
 			<function>Object 1 Function</function>
+		</comObject>
+		<comObject>
+			<name>Object 2 Name</name>
+			<function>Object 2 Function</function>
+		</comObject>
+		<comObject>
+			<name>Object 3 Name</name>
+			<function>Object 3 Function</function>
 		</comObject>
 	</comObjects>
 </device>

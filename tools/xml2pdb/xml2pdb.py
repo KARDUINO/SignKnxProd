@@ -67,12 +67,12 @@ def addTranslations(languagesXML, itemsXML, refId, tagName):
 
 	return
 
-def addParameterBlock(parentXML, parameterBlockIdx, name, text):
+def addParameterBlock(parentXML, parameterBlockIdx, name):
 	parameterBlockId = applicationProgramId + "_PB-%d" % parameterBlockIdx
 	parameterBlockXML = ET.SubElement(parentXML, "ParameterBlock")
 	parameterBlockXML.set("Id", parameterBlockId)
 	parameterBlockXML.set("Name", name)
-	parameterBlockXML.set("Text", text)
+	parameterBlockXML.set("Text", name)
 	# According to spec: Access. Missing?
 	# According to spec: Help Topic ID. Missing?
 
@@ -152,7 +152,7 @@ def createHardware(srcRootXML):
 	hardwareXML.set("Name", srcDeviceXML.find("name").text)
 	hardwareXML.set("SerialNumber", serialNumber)
 	hardwareXML.set("VersionNumber", versionNumber)
-	hardwareXML.set("BusCurrent", "0")
+	hardwareXML.set("BusCurrent", "12")
 	hardwareXML.set("IsAccessory", "0")
 	hardwareXML.set("HasIndividualAddress", "1")
 	hardwareXML.set("HasApplicationProgram", "1")
@@ -305,80 +305,84 @@ def createProduct(srcRootXML):
 		channelIdx += 1
 		channelXML = addChannel(dynamicXML, parameterBlockIdx, srcChannelXML.find("name").text)
 
-		parameterBlockIdx += 1
-		parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, "Parameter Block Name", "Parameter Block Text")
-	
-		srcParametersXML = srcChannelXML.find("parameters")
+		srcParameterBlocksXML = srcChannelXML.find("parameterBlocks")
 
-		for srcEntryXML in srcParametersXML:
-			if srcEntryXML.tag == "parameter":
-				parameterTypeName = srcEntryXML.find("name").text
-				parameterTypeId = applicationProgramId + "_PT-" + parameterTypeName.encode('iso9075')
-				parameterTypeXML = ET.SubElement(parameterTypesXML, "ParameterType")
-				parameterTypeXML.set("Id", parameterTypeId)
-				parameterTypeXML.set("Name", parameterTypeName)
-				parameterTypeXML.set("Plugin", "")
-				
-				#typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
-				#typeRestrictionXML.set("Base", "Value")
-				#typeRestrictionXML.set("SizeInBit", "8")
-				
-				#enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
-				#enumerationXML.set("Id", "")
-				#enumerationXML.set("DisplayOrder", "")
-				#enumerationXML.set("Text", "")
-				#enumerationXML.set("Value", "")
-				
-				typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
-				typeNumberXML.set("SizeInBit", "8")
-				typeNumberXML.set("Type", "unsignedInt")
-				typeNumberXML.set("minInclusive", "0")
-				typeNumberXML.set("maxInclusive", "100")
-				typeNumberXML.set("SizeInBit", "8")
-				# According to spec: UIHint. Missing?
-				
-				parameterIdx = parameterIdx + 1
-				parameterId = applicationProgramId + "_P-%d" % parameterIdx
-				parameterXML = ET.SubElement(parametersXML, "Parameter")
-				parameterXML.set("Id", parameterId)
-				parameterXML.set("Name", srcEntryXML.find("name").text)
-				parameterXML.set("ParameterType", parameterTypeId)
-				parameterXML.set("Text", srcEntryXML.find("name").text)
-				# According to spec: SuffixText. Missing?
-				parameterXML.set("Access", "ReadWrite")
-				parameterXML.set("Value", "60")
-				# According to spec: Patch Always. Missing?
-				# According to spec: Unique Number. Missing?
-				
-				#memoryXML = ET.SubElement(parameterXML, "Memory")
-				#memoryXML.set("CodeSegment", "")
-				#memoryXML.set("Offset", "0")
-				#memoryXML.set("BitOffset", "0")
-				
-				#propertyXML = ET.SubElement(parameterXML, "Property")
-				#propertyXML.set("ObjectIndex", "0")
-				#propertyXML.set("PropertyId", "0")
-				#propertyXML.set("Offset", "0")
-				#propertyXML.set("BitOffset", "0")
-				
-				parameterRefId = parameterId + "_R-1"
-				parameterRefXML = ET.SubElement(parameterRefsXML, "ParameterRef")
-				parameterRefXML.set("Id", parameterRefId)
-				parameterRefXML.set("RefId", parameterId)
-				# According to spec: Text. Missing?
-				# According to spec: SuffixText. Missing?
-				# Obsolete! parameterRefXML.set("DisplayOrder", "1")
-				# According to spec: Access. Missing?
-				# According to spec: Default Value. Missing?
-				parameterRefXML.set("Tag", "1")
-			
-				parameterRefRefXML = ET.SubElement(parameterBlockXML, "ParameterRefRef")
-				parameterRefRefXML.set("RefId", parameterRefId)
+		for srcParameterBlockXML in srcParameterBlocksXML:
 
-			elif srcEntryXML.tag == "divider":
-				print "Got divider!"
-			else:
-				print "Unknown tag: " + srcEntryXML.tag
+			parameterBlockIdx += 1
+			parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, srcParameterBlockXML.find("name").text)
+		
+			srcParametersXML = srcParameterBlockXML.find("parameters")
+
+			for srcEntryXML in srcParametersXML:
+				if srcEntryXML.tag == "parameter":
+					parameterTypeName = srcEntryXML.find("name").text
+					parameterTypeId = applicationProgramId + "_PT-" + parameterTypeName.encode('iso9075')
+					parameterTypeXML = ET.SubElement(parameterTypesXML, "ParameterType")
+					parameterTypeXML.set("Id", parameterTypeId)
+					parameterTypeXML.set("Name", parameterTypeName)
+					parameterTypeXML.set("Plugin", "")
+					
+					#typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
+					#typeRestrictionXML.set("Base", "Value")
+					#typeRestrictionXML.set("SizeInBit", "8")
+					
+					#enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
+					#enumerationXML.set("Id", "")
+					#enumerationXML.set("DisplayOrder", "")
+					#enumerationXML.set("Text", "")
+					#enumerationXML.set("Value", "")
+					
+					typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
+					typeNumberXML.set("SizeInBit", "8")
+					typeNumberXML.set("Type", "unsignedInt")
+					typeNumberXML.set("minInclusive", "0")
+					typeNumberXML.set("maxInclusive", "100")
+					typeNumberXML.set("SizeInBit", "8")
+					# According to spec: UIHint. Missing?
+					
+					parameterIdx = parameterIdx + 1
+					parameterId = applicationProgramId + "_P-%d" % parameterIdx
+					parameterXML = ET.SubElement(parametersXML, "Parameter")
+					parameterXML.set("Id", parameterId)
+					parameterXML.set("Name", srcEntryXML.find("name").text)
+					parameterXML.set("ParameterType", parameterTypeId)
+					parameterXML.set("Text", srcEntryXML.find("name").text)
+					# According to spec: SuffixText. Missing?
+					parameterXML.set("Access", "ReadWrite")
+					parameterXML.set("Value", "60")
+					# According to spec: Patch Always. Missing?
+					# According to spec: Unique Number. Missing?
+					
+					#memoryXML = ET.SubElement(parameterXML, "Memory")
+					#memoryXML.set("CodeSegment", "")
+					#memoryXML.set("Offset", "0")
+					#memoryXML.set("BitOffset", "0")
+					
+					#propertyXML = ET.SubElement(parameterXML, "Property")
+					#propertyXML.set("ObjectIndex", "0")
+					#propertyXML.set("PropertyId", "0")
+					#propertyXML.set("Offset", "0")
+					#propertyXML.set("BitOffset", "0")
+					
+					parameterRefId = parameterId + "_R-1"
+					parameterRefXML = ET.SubElement(parameterRefsXML, "ParameterRef")
+					parameterRefXML.set("Id", parameterRefId)
+					parameterRefXML.set("RefId", parameterId)
+					# According to spec: Text. Missing?
+					# According to spec: SuffixText. Missing?
+					# Obsolete! parameterRefXML.set("DisplayOrder", "1")
+					# According to spec: Access. Missing?
+					# According to spec: Default Value. Missing?
+					parameterRefXML.set("Tag", "1")
+				
+					parameterRefRefXML = ET.SubElement(parameterBlockXML, "ParameterRefRef")
+					parameterRefRefXML.set("RefId", parameterRefId)
+
+				elif srcEntryXML.tag == "divider":
+					print "Got divider!"
+				else:
+					print "Unknown tag: " + srcEntryXML.tag
 
 	srcParametersXML = srcRootXML.find("comObjects")
 	comObjectIdx = -1
@@ -388,7 +392,7 @@ def createProduct(srcRootXML):
 	channelXML = addChannel(dynamicXML, parameterBlockIdx, "Comm Channel Name")
 
 	parameterBlockIdx += 1
-	parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, "Comm Parameter Block Name", "Comm Parameter Block Text")
+	parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, "Comm Parameter Block")
 
 	for srcEntryXML in srcParametersXML:
 		if srcEntryXML.tag == "comObject":
