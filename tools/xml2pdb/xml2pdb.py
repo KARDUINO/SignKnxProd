@@ -67,7 +67,12 @@ def addTranslations(languagesXML, itemsXML, refId, tagName):
 
 	return
 
-def addParameterBlock(parentXML, parameterBlockIdx, name):
+parameterBlockIdx = 0
+
+def addParameterBlock(parentXML, name):
+	global parameterBlockIdx
+
+	parameterBlockIdx += 1
 	parameterBlockId = applicationProgramId + "_PB-%d" % parameterBlockIdx
 	parameterBlockXML = ET.SubElement(parentXML, "ParameterBlock")
 	parameterBlockXML.set("Id", parameterBlockId)
@@ -78,7 +83,12 @@ def addParameterBlock(parentXML, parameterBlockIdx, name):
 
 	return parameterBlockXML
 
-def addChannel(parentXML, channelIdx, name):
+channelIdx = -1
+
+def addChannel(parentXML, name):
+	global channelIdx
+
+	channelIdx += 1
 	channelId = applicationProgramId + "_CH-%d" % channelIdx
 	channelXML = ET.SubElement(parentXML, "Channel")
 	channelXML.set("Id", channelId)
@@ -298,19 +308,15 @@ def createProduct(srcRootXML):
 
 	srcChannelsXML = srcRootXML.find("channels")
 	parameterIdx = 0
-	channelIdx = -1
-	parameterBlockIdx = 0
 
 	for srcChannelXML in srcChannelsXML:
-		channelIdx += 1
-		channelXML = addChannel(dynamicXML, parameterBlockIdx, srcChannelXML.find("name").text)
+		channelXML = addChannel(dynamicXML, srcChannelXML.find("name").text)
 
 		srcParameterBlocksXML = srcChannelXML.find("parameterBlocks")
 
 		for srcParameterBlockXML in srcParameterBlocksXML:
 
-			parameterBlockIdx += 1
-			parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, srcParameterBlockXML.find("name").text)
+			parameterBlockXML = addParameterBlock(channelXML, srcParameterBlockXML.find("name").text)
 		
 			srcParametersXML = srcParameterBlockXML.find("parameters")
 
@@ -388,11 +394,7 @@ def createProduct(srcRootXML):
 	comObjectIdx = -1
 	comObjectRefIdx = 0
 
-	channelIdx += 1
-	channelXML = addChannel(dynamicXML, parameterBlockIdx, "Comm Channel Name")
-
-	parameterBlockIdx += 1
-	parameterBlockXML = addParameterBlock(channelXML, parameterBlockIdx, "Comm Parameter Block")
+	channelIndependentBlockXML = ET.SubElement(dynamicXML, "ChannelIndependentBlock")
 
 	for srcEntryXML in srcParametersXML:
 		if srcEntryXML.tag == "comObject":
@@ -435,7 +437,7 @@ def createProduct(srcRootXML):
 			#comObjectRefXML.set("DatapointType", "DPST-10-1")
 			comObjectRefXML.set("Tag", str(comObjectRefIdx))
 
-			comObjectRefRefXML = ET.SubElement(parameterBlockXML, "ComObjectRefRef")
+			comObjectRefRefXML = ET.SubElement(channelIndependentBlockXML, "ComObjectRefRef")
 			comObjectRefRefXML.set("RefId", comObjectRefId)
 
 	addressTableXML.set("CodeSegment", applicationProgramId + "_AS-4000")
