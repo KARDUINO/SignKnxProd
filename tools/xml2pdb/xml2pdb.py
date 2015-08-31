@@ -1,26 +1,25 @@
 import xml.etree.ElementTree as ET
 import iso9075
 
-manufacturerId = "M-00A5"
-catalogNumber = "6"
-catalogItemNumber = "2"
-serialNumber = "00000004"
-versionNumber = "4"
-orderNumber = "00001153"
-applicationNumber = "4"
-applicationVersion = "2"
+tree = ET.parse('testdev.xml')
+root = tree.getroot()
+srcDeviceXML = root.find("info")
 
-# "M-00A6_CS-4"
+#manufacturerId = srcDeviceXML.find("manufacturerId").text
+manufacturerId = "M-013A"
+catalogNumber = srcDeviceXML.find("catalogNumber").text
+catalogItemNumber = srcDeviceXML.find("catalogItemNumber").text
+serialNumber = srcDeviceXML.find("serialNumber").text
+versionNumber = srcDeviceXML.find("versionNumber").text
+orderNumber = srcDeviceXML.find("orderNumber").text
+applicationNumber = srcDeviceXML.find("applicationNumber").text
+applicationVersion = srcDeviceXML.find("applicationVersion").text
+
 catalogSectionId = manufacturerId + "_CS-" + catalogNumber
-# "M-00A6_H-00000003-1"
 hardwareId = manufacturerId + "_H-" + serialNumber + "-" + versionNumber
-# "M-00A6_H-00000003-1_P-00001152"
 productId= hardwareId + "_P-" + orderNumber
-# "M-00A6_H-00000003-1_HP-0003-00-0FC5"
-hardware2ProgramId = hardwareId + "_HP-" + "%04X" % int(applicationNumber) + "-" + "%02X" % int(applicationVersion) + "-0FC5"
-# "M-00A6_A-0003-00-0FC5"
-applicationProgramId = manufacturerId + "_A-" + "%04X" % int(applicationNumber) + "-" + "%02X" % int(applicationVersion) + "-0FC5"
-# "M-00A6_H-00000003-1_HP-0003-00-0FC5_CI-00001152-1"
+hardware2ProgramId = hardwareId + "_HP-" + "%04X" % int(applicationNumber) + "-" + "%02X" % int(applicationVersion) + "-F00D"
+applicationProgramId = manufacturerId + "_A-" + "%04X" % int(applicationNumber) + "-" + "%02X" % int(applicationVersion) + "-F00D"
 catalogItemId = hardware2ProgramId + "_CI-" + orderNumber + "-" + catalogItemNumber
 
 def indent(elem, level=0):
@@ -468,9 +467,6 @@ def createProduct(srcRootXML):
 	manufacturerXML.append(languagesXML)
 
 	return dstRootXML
-
-tree = ET.parse('testdev.xml')
-root = tree.getroot()
 
 catalogXML = createCatalog(root)
 

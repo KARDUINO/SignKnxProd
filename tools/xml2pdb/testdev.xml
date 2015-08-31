@@ -5,6 +5,13 @@
 		<name xml:lang="en-US">Device name US</name>
 		<category xml:lang="de-DE">Device category DE</category>
 		<category xml:lang="en-US">Device category US</category>
+		<catalogNumber>6</catalogNumber>
+		<catalogItemNumber>2</catalogItemNumber>
+		<serialNumber>00000004</serialNumber>
+		<versionNumber>4</versionNumber>
+		<orderNumber>00001153</orderNumber>
+		<applicationNumber>4</applicationNumber>
+		<applicationVersion>2</applicationVersion>
 	</info>
 	<channels>
 		<channel>
