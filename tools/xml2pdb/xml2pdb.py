@@ -1,6 +1,10 @@
 import xml.etree.ElementTree as ET
 import iso9075
 
+masterTree = ET.parse('knx_master.xml')
+masterRoot = masterTree.getroot()
+knxns = {'knx': 'http://knx.org/xml/project/11'}
+
 tree = ET.parse('testdev.xml')
 root = tree.getroot()
 srcDeviceXML = root.find("info")
@@ -418,6 +422,19 @@ def createProduct(srcRootXML):
 	for srcEntryXML in srcParametersXML:
 		if srcEntryXML.tag == "comObject":
 
+			datapointTypeXML = masterRoot.find(".//knx:DatapointSubtype[@Id='" + srcEntryXML.find("datapointType").text + "']/../..", knxns)
+			datapointSubtypeXML = masterRoot.find(".//knx:DatapointSubtype[@Id='" + srcEntryXML.find("datapointType").text + "']", knxns)
+			bitSize = int(datapointTypeXML.get("SizeInBit"))
+			
+			if bitSize < 8:
+				objectSize = "%d Bit" % bitSize
+			elif bitSize == 8:
+				objectSize = "1 Byte"
+			elif (bitSize % 8) == 0:
+				objectSize = "%d Bytes" % (bitSize / 8)
+			else:
+				print "Unknown bitsize: %d bits" % bitSize
+			
 			comObjectIdx += + 1
 			comObjectId = applicationProgramId + "_O-%d" % comObjectIdx
 			comObjectXML = ET.SubElement(comObjectTableXML, "ComObject")
@@ -429,14 +446,28 @@ def createProduct(srcRootXML):
 			comObjectXML.set("FunctionText", srcEntryXML.find("function").text)
 			addTranslations(languagesXML, srcEntryXML.findall("function"), applicationProgramId, comObjectId, "FunctionText")
 			comObjectXML.set("Priority", "Low")
-			comObjectXML.set("ObjectSize", "3 Bytes")
-			comObjectXML.set("ReadFlag", "Disabled")
-			comObjectXML.set("WriteFlag", "Enabled")
+			comObjectXML.set("ObjectSize", objectSize)
+
+			if srcEntryXML.find("readFlag") is None:
+				comObjectXML.set("ReadFlag", "Disabled")
+			else:
+				comObjectXML.set("ReadFlag", "Enabled")
+
+			if srcEntryXML.find("writeFlag") is None:
+				comObjectXML.set("WriteFlag", "Disabled")
+			else:
+				comObjectXML.set("WriteFlag", "Enabled")
+
 			comObjectXML.set("CommunicationFlag", "Enabled")
-			comObjectXML.set("TransmitFlag", "Enabled")
+
+			if srcEntryXML.find("transmitFlag") is None:
+				comObjectXML.set("TransmitFlag", "Disabled")
+			else:
+				comObjectXML.set("TransmitFlag", "Enabled")
+
 			comObjectXML.set("UpdateFlag", "Enabled")
 			comObjectXML.set("ReadOnInitFlag", "Disabled")
-			comObjectXML.set("DatapointType", "DPST-10-1")
+			comObjectXML.set("DatapointType", srcEntryXML.find("datapointType").text)
 			# Not in spec. Obsolete? comObjectXML.set("VisibleDescription", "")
 			
 			comObjectRefIdx += 1
@@ -496,6 +527,6 @@ hardwareTree.write("Hardware.xml", "utf-8", True)
 productXML = createProduct(root)
 
 indent(productXML)
-ET.dump(productXML)
+#ET.dump(productXML)
 productTree = ET.ElementTree(productXML)
 productTree.write(applicationProgramId + ".xml", "utf-8", True)

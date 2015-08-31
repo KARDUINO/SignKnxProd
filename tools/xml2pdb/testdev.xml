@@ -84,18 +84,34 @@
 			<name xml:lang="en-US">Object 1 Name US</name>
 			<function xml:lang="de-DE">Object 1 Function DE</function>
 			<function xml:lang="en-US">Object 1 Function US</function>
+			<datapointType>DPST-1-1</datapointType>
+			<readFlag />
+			<writeFlag />
+			<transmitFlag />
 		</comObject>
 		<comObject>
 			<name xml:lang="de-DE">Object 2 Name DE</name>
 			<name xml:lang="en-US">Object 2 Name US</name>
 			<function xml:lang="de-DE">Object 2 Function DE</function>
 			<function xml:lang="en-US">Object 2 Function US</function>
+			<datapointType>DPST-3-7</datapointType>
+			<readFlag />
 		</comObject>
 		<comObject>
 			<name xml:lang="de-DE">Object 3 Name DE</name>
 			<name xml:lang="en-US">Object 3 Name US</name>
 			<function xml:lang="de-DE">Object 3 Function DE</function>
 			<function xml:lang="en-US">Object 3 Function US</function>
+			<datapointType>DPST-5-1</datapointType>
+			<writeFlag />
+		</comObject>
+		<comObject>
+			<name xml:lang="de-DE">Object 4 Name DE</name>
+			<name xml:lang="en-US">Object 4 Name US</name>
+			<function xml:lang="de-DE">Object 4 Function DE</function>
+			<function xml:lang="en-US">Object 4 Function US</function>
+			<datapointType>DPST-10-1</datapointType>
+			<transmitFlag />
 		</comObject>
 	</comObjects>
 </device>
