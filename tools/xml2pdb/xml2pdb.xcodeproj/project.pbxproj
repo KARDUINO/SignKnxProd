@@ -9,12 +9,14 @@
 /* Begin PBXFileReference section */
 		2597717A1B90AA2F004114B7 /* testdev.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = testdev.xml; sourceTree = "<group>"; };
 		2597717B1B90AA2F004114B7 /* xml2pdb.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = xml2pdb.py; sourceTree = "<group>"; };
+		2597717C1B92059C004114B7 /* iso9075.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = iso9075.py; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		2597716D1B8FB2F0004114B7 = {
 			isa = PBXGroup;
 			children = (
+				2597717C1B92059C004114B7 /* iso9075.py */,
 				2597717A1B90AA2F004114B7 /* testdev.xml */,
 				2597717B1B90AA2F004114B7 /* xml2pdb.py */,
 			);
