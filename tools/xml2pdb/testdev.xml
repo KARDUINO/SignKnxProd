@@ -73,6 +73,20 @@
 							<name xml:lang="de-DE">Parameter 7 DE</name>
 							<name xml:lang="en-US">Parameter 7 US</name>
 						</parameter>
+						<parameter type="enumeration" sizeInBit="8" default="25">
+							<name xml:lang="de-DE">Parameter 8 DE</name>
+							<name xml:lang="en-US">Parameter 8 US</name>
+							<entries>
+								<entry value="1">
+									<name xml:lang="de-DE">Entry 1 DE</name>
+									<name xml:lang="en-US">Entry 1 US</name>
+								</entry>
+								<entry value="25">
+									<name xml:lang="de-DE">Entry 25 DE</name>
+									<name xml:lang="en-US">Entry 25 US</name>
+								</entry>
+							</entries>
+						</parameter>
 					</parameters>
 				</parameterBlock>
 			</parameterBlocks>

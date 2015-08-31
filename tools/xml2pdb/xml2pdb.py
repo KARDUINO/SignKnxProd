@@ -421,18 +421,25 @@ def createProduct(srcRootXML):
 
 						if srcEntryXML.get("pattern") is not None:
 							typeTextXML.set("Pattern", srcEntryXML.get("pattern"))
+					elif type == "enumeration":
+						typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
+						typeRestrictionXML.set("Base", "Value")
+						typeRestrictionXML.set("SizeInBit", srcEntryXML.get("sizeInBit"))
+							
+						srcEntriesXML = srcEntryXML.find("entries")
+							
+						for srcListEntryXML in srcEntriesXML:
+							enumerationValue = srcListEntryXML.get("value")
+							enumerationId = parameterTypeId + "_EN-%s" % enumerationValue
+							enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
+							enumerationXML.set("Id", enumerationId)
+							# Obsolete! enumerationXML.set("DisplayOrder", "")
+							enumerationXML.set("Text", srcListEntryXML.find("name").text)
+							addTranslations(languagesXML, srcListEntryXML.findall("name"), applicationProgramId, enumerationId, "Text")
+							enumerationXML.set("Value", enumerationValue)
 					else:
 						print type
 
-					#typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
-					#typeRestrictionXML.set("Base", "Value")
-					#typeRestrictionXML.set("SizeInBit", "8")
-					
-					#enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
-					#enumerationXML.set("Id", "")
-					#enumerationXML.set("DisplayOrder", "")
-					#enumerationXML.set("Text", "")
-					#enumerationXML.set("Value", "")
 
 					parameterIdx = parameterIdx + 1
 					parameterId = applicationProgramId + "_P-%d" % parameterIdx
