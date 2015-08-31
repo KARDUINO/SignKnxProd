@@ -22,11 +22,11 @@
 					<name xml:lang="de-DE">Parameter Block 1 Name DE</name>
 					<name xml:lang="en-US">Parameter Block 1 Name US</name>
 					<parameters>
-						<parameter>
+						<parameter type="unsignedInt" sizeInBit="8">
 							<name xml:lang="de-DE">Parameter 1 DE</name>
 							<name xml:lang="en-US">Parameter 1 US</name>
 						</parameter>
-						<parameter>
+						<parameter type="signedInt" sizeInBit="8" minInclusive="50" maxInclusive="100" uiHint="Slider">
 							<name xml:lang="de-DE">Parameter 2 DE</name>
 							<name xml:lang="en-US">Parameter 2 US</name>
 						</parameter>
@@ -36,11 +36,11 @@
 					<name xml:lang="de-DE">Parameter Block 2 Name DE</name>
 					<name xml:lang="en-US">Parameter Block 2 Name US</name>
 					<parameters>
-						<parameter>
+						<parameter type="float" sizeInBit="32" uiHint="Slider">
 							<name xml:lang="de-DE">Parameter 3 DE</name>
 							<name xml:lang="en-US">Parameter 3 US</name>
 						</parameter>
-						<parameter>
+						<parameter type="float" sizeInBit="16" minInclusive="0" maxInclusive="500">
 							<name xml:lang="de-DE">Parameter 4 DE</name>
 							<name xml:lang="en-US">Parameter 4 US</name>
 						</parameter>
@@ -56,7 +56,7 @@
 					<name xml:lang="de-DE">Parameter Block 3 Name DE</name>
 					<name xml:lang="en-US">Parameter Block 3 Name US</name>
 					<parameters>
-						<parameter>
+						<parameter type="unsignedInt" sizeInBit="1" minInclusive="0" maxInclusive="1" uiHint="CheckBox">
 							<name xml:lang="de-DE">Parameter 5 DE</name>
 							<name xml:lang="en-US">Parameter 5 US</name>
 						</parameter>
@@ -64,12 +64,12 @@
 							<text xml:lang="de-DE">Separator Text DE</text>
 							<text xml:lang="en-US">Separator Text US</text>
 						</parameterSeparator>
-						<parameter>
+						<parameter type="text" sizeInBit="112">
 							<name xml:lang="de-DE">Parameter 6 DE</name>
 							<name xml:lang="en-US">Parameter 6 US</name>
 						</parameter>
 						<parameterSeparator />
-						<parameter>
+						<parameter type="unsignedInt" sizeInBit="8" minInclusive="0" maxInclusive="255">
 							<name xml:lang="de-DE">Parameter 7 DE</name>
 							<name xml:lang="en-US">Parameter 7 US</name>
 						</parameter>

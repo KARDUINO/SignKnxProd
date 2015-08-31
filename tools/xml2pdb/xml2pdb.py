@@ -340,6 +340,90 @@ def createProduct(srcRootXML):
 					parameterTypeXML.set("Name", parameterTypeName)
 					parameterTypeXML.set("Plugin", "")
 					
+					type = srcEntryXML.get("type")
+						
+					if (type == "unsignedInt") | (type == "signedInt"):
+						sizeInBit = srcEntryXML.get("sizeInBit")
+
+						typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
+						typeNumberXML.set("SizeInBit", sizeInBit)
+						
+						minInclusive = srcEntryXML.get("minInclusive")
+						maxInclusive = srcEntryXML.get("maxInclusive")
+
+						if (type == "unsignedInt"):
+							if minInclusive is None:
+								minInclusive = "0"
+
+							if maxInclusive is None:
+								maxInclusive = str((1 << int(sizeInBit)) - 1)
+
+							typeNumberXML.set("Type", "unsignedInt")
+						else:
+							if minInclusive is None:
+								minInclusive = "-" + str(1 << (int(sizeInBit) - 1))
+
+							if maxInclusive is None:
+								maxInclusive = str((1 << (int(sizeInBit) - 1)) - 1)
+
+							typeNumberXML.set("Type", "signedInt")
+
+						typeNumberXML.set("minInclusive", minInclusive)
+						typeNumberXML.set("maxInclusive", maxInclusive)
+						
+						if srcEntryXML.get("uiHint") is not None:
+							typeNumberXML.set("UIHint", srcEntryXML.get("uiHint"))
+					elif type == "float":
+						typeFloatXML = ET.SubElement(parameterTypeXML, "TypeFloat")
+
+						sizeInBit = srcEntryXML.get("sizeInBit");
+						minInclusive = srcEntryXML.get("minInclusive")
+						maxInclusive = srcEntryXML.get("maxInclusive")
+
+						if sizeInBit == "16":
+							encoding = "DPT 9"
+
+							if minInclusive is None:
+								minInclusive = "-671088.64"
+		
+							if maxInclusive is None:
+								maxInclusive = "670760.96"
+
+						elif sizeInBit == "32":
+							encoding = "IEEE-754 Single"
+
+							if minInclusive is None:
+								minInclusive = "1.175e-38"
+
+							if maxInclusive is None:
+								maxInclusive = "3.4028235e+38"
+
+						elif sizeInBit == "64":
+							encoding = "IEEE-754 Double"
+
+							if minInclusive is None:
+								minInclusive = "2.2251e-308"
+							
+							if maxInclusive is None:
+								maxInclusive = "1.798e308"
+						else:
+							print "Unkown sizeInBit: " + sizeInBit
+								
+						typeFloatXML.set("Encoding", encoding)
+						typeFloatXML.set("minInclusive", minInclusive)
+						typeFloatXML.set("maxInclusive", maxInclusive)
+
+						if srcEntryXML.get("uiHint") is not None:
+							typeFloatXML.set("UIHint", srcEntryXML.get("uiHint"))
+					elif type == "text":
+						typeTextXML = ET.SubElement(parameterTypeXML, "TypeText")
+						typeTextXML.set("SizeInBit", srcEntryXML.get("sizeInBit"))
+
+						if srcEntryXML.get("pattern") is not None:
+							typeTextXML.set("Pattern", srcEntryXML.get("pattern"))
+					else:
+						print type
+
 					#typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
 					#typeRestrictionXML.set("Base", "Value")
 					#typeRestrictionXML.set("SizeInBit", "8")
@@ -349,15 +433,7 @@ def createProduct(srcRootXML):
 					#enumerationXML.set("DisplayOrder", "")
 					#enumerationXML.set("Text", "")
 					#enumerationXML.set("Value", "")
-					
-					typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
-					typeNumberXML.set("SizeInBit", "8")
-					typeNumberXML.set("Type", "unsignedInt")
-					typeNumberXML.set("minInclusive", "0")
-					typeNumberXML.set("maxInclusive", "100")
-					typeNumberXML.set("SizeInBit", "8")
-					# According to spec: UIHint. Missing?
-					
+
 					parameterIdx = parameterIdx + 1
 					parameterId = applicationProgramId + "_P-%d" % parameterIdx
 					parameterXML = ET.SubElement(parametersXML, "Parameter")
