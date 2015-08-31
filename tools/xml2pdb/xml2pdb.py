@@ -37,9 +37,13 @@ def indent(elem, level=0):
 		if level and (not elem.tail or not elem.tail.strip()):
 			elem.tail = i
 
-def addTranslations(languagesXML, itemsXML, refId, tagName):
+def addTranslations(languagesXML, itemsXML, unitId, elementId, tagName):
 	for itemXML in itemsXML:
 		countryCode = itemXML.get("{http://www.w3.org/XML/1998/namespace}lang")
+		
+		if countryCode is None:
+			continue
+
 		translation = itemXML.text
 
 		languageXML = languagesXML.find("*[@Identifier='" + countryCode + "']")
@@ -48,17 +52,17 @@ def addTranslations(languagesXML, itemsXML, refId, tagName):
 			languageXML = ET.SubElement(languagesXML, "Language")
 			languageXML.set("Identifier", countryCode)
 
-		translationUnitXML = languageXML.find("*[@RefId='" + refId + "']")
+		translationUnitXML = languageXML.find("*[@RefId='" + unitId + "']")
 	
 		if translationUnitXML is None:
 			translationUnitXML = ET.SubElement(languageXML, "TranslationUnit")
-			translationUnitXML.set("RefId", refId)
+			translationUnitXML.set("RefId", unitId)
 	
-		translationElementXML = translationUnitXML.find("*[@RefId='" + refId + "']")
+		translationElementXML = translationUnitXML.find("*[@RefId='" + elementId + "']")
 
 		if translationElementXML is None:
 			translationElementXML = ET.SubElement(translationUnitXML, "TranslationElement")
-			translationElementXML.set("RefId", refId)
+			translationElementXML.set("RefId", elementId)
 	
 		translationXML = ET.SubElement(translationElementXML, "Translation")
 		translationXML.set("AttributeName", tagName)
@@ -123,7 +127,7 @@ def createCatalog(srcRootXML):
 	catalogSectionXML = ET.SubElement(catalogXML, "CatalogSection")
 	catalogSectionXML.set("Id", catalogSectionId)
 	catalogSectionXML.set("Name", srcDeviceXML.find("category").text)
-	addTranslations(languagesXML, srcDeviceXML.findall("category"), catalogSectionId, "Name")
+	addTranslations(languagesXML, srcDeviceXML.findall("category"), catalogSectionId, catalogSectionId, "Name")
 	catalogSectionXML.set("Number", catalogNumber)
 	catalogSectionXML.set("VisibleDescription", "")
 	catalogSectionXML.set("DefaultLanguage", "de-DE")
@@ -132,7 +136,7 @@ def createCatalog(srcRootXML):
 	catalogItemXML = ET.SubElement(catalogSectionXML, "CatalogItem")
 	catalogItemXML.set("Id", catalogItemId)
 	catalogItemXML.set("Name", srcDeviceXML.find("name").text)
-	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogItemId, "Name")
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogItemId, catalogItemId, "Name")
 	catalogItemXML.set("Number", catalogItemNumber)
 	# According to spec: VisibleDescription. Missing?
 	catalogItemXML.set("ProductRefId", productId)
@@ -182,12 +186,12 @@ def createHardware(srcRootXML):
 	productXML = ET.SubElement(productsXML, "Product")
 	productXML.set("Id", productId)
 	productXML.set("Text", srcDeviceXML.find("name").text)
-	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "Name")
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), productId, productId, "Name")
 	productXML.set("OrderNumber", orderNumber)
 	productXML.set("IsRailMounted", "1")
 	productXML.set("WidthInMillimeter", "1.0500000e+002")
 	productXML.set("VisibleDescription", srcDeviceXML.find("name").text)
-	addTranslations(languagesXML, srcDeviceXML.findall("name"), catalogSectionId, "VisibleDescription")
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), productId, productId, "VisibleDescription")
 	productXML.set("DefaultLanguage", "de-DE")
 	productXML.set("Hash", "")
 	productXML.set("NonRegRelevantDataVersion", "0")
@@ -236,6 +240,7 @@ def createProduct(srcRootXML):
 	applicationProgramXML.set("MaskVersion", "MV-0705")
 	# According to spec: Visible Description. Missing?
 	applicationProgramXML.set("Name", srcDeviceXML.find("name").text)
+	addTranslations(languagesXML, srcDeviceXML.findall("name"), applicationProgramId, applicationProgramId, "Name")
 	applicationProgramXML.set("LoadProcedureStyle", "DefaultProcedure")
 	applicationProgramXML.set("PeiType", "0")
 	# According to spec: Serial Number. Missing?
@@ -311,12 +316,14 @@ def createProduct(srcRootXML):
 
 	for srcChannelXML in srcChannelsXML:
 		channelXML = addChannel(dynamicXML, srcChannelXML.find("name").text)
+		addTranslations(languagesXML, srcChannelXML.findall("name"), applicationProgramId, channelXML.get("Id"), "Text")
 
 		srcParameterBlocksXML = srcChannelXML.find("parameterBlocks")
 
 		for srcParameterBlockXML in srcParameterBlocksXML:
 
 			parameterBlockXML = addParameterBlock(channelXML, srcParameterBlockXML.find("name").text)
+			addTranslations(languagesXML, srcParameterBlockXML.findall("name"), applicationProgramId, parameterBlockXML.get("Id"), "Text")
 		
 			srcParametersXML = srcParameterBlockXML.find("parameters")
 
@@ -354,6 +361,7 @@ def createProduct(srcRootXML):
 					parameterXML.set("Name", srcEntryXML.find("name").text)
 					parameterXML.set("ParameterType", parameterTypeId)
 					parameterXML.set("Text", srcEntryXML.find("name").text)
+					addTranslations(languagesXML, srcEntryXML.findall("name"), applicationProgramId, parameterId, "Text")
 					# According to spec: SuffixText. Missing?
 					parameterXML.set("Access", "ReadWrite")
 					parameterXML.set("Value", "60")
@@ -395,6 +403,7 @@ def createProduct(srcRootXML):
 						parameterSeparatorXML.set("Text", "")
 					else:
 						parameterSeparatorXML.set("Text", srcEntryXML.find("text").text)
+						addTranslations(languagesXML, srcEntryXML.findall("text"), applicationProgramId, parameterSeparatorId, "Text")
 					# According to spec: Access. Missing?
 
 				else:
@@ -415,8 +424,10 @@ def createProduct(srcRootXML):
 			comObjectXML.set("Id", comObjectId)
 			comObjectXML.set("Name", srcEntryXML.find("name").text)
 			comObjectXML.set("Text", srcEntryXML.find("name").text)
+			addTranslations(languagesXML, srcEntryXML.findall("name"), applicationProgramId, comObjectId, "Text")
 			comObjectXML.set("Number", str(comObjectIdx))
 			comObjectXML.set("FunctionText", srcEntryXML.find("function").text)
+			addTranslations(languagesXML, srcEntryXML.findall("function"), applicationProgramId, comObjectId, "FunctionText")
 			comObjectXML.set("Priority", "Low")
 			comObjectXML.set("ObjectSize", "3 Bytes")
 			comObjectXML.set("ReadFlag", "Disabled")
