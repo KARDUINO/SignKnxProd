@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<device>
+	<info>
+		<name xml:lang="de-DE">Device name DE</name>
+		<name xml:lang="en-US">Device name US</name>
+		<category xml:lang="de-DE">Device category DE</category>
+		<category xml:lang="en-US">Device category US</category>
+		<catalogNumber>6</catalogNumber>
+		<catalogItemNumber>2</catalogItemNumber>
+		<serialNumber>00000004</serialNumber>
+		<versionNumber>4</versionNumber>
+		<orderNumber>00001153</orderNumber>
+		<applicationNumber>4</applicationNumber>
+		<applicationVersion>2</applicationVersion>
+	</info>
+	<channels>
+		<channel>
+			<name xml:lang="de-DE">Channel 1 Name DE</name>
+			<name xml:lang="en-US">Channel 1 Name US</name>
+			<parameterBlocks>
+				<parameterBlock>
+					<name xml:lang="de-DE">Parameter Block 1 Name DE</name>
+					<name xml:lang="en-US">Parameter Block 1 Name US</name>
+					<parameters>
+						<parameter>
+							<name xml:lang="de-DE">Parameter 1 DE</name>
+							<name xml:lang="en-US">Parameter 1 US</name>
+						</parameter>
+						<parameter>
+							<name xml:lang="de-DE">Parameter 2 DE</name>
+							<name xml:lang="en-US">Parameter 2 US</name>
+						</parameter>
+					</parameters>
+				</parameterBlock>
+				<parameterBlock>
+					<name xml:lang="de-DE">Parameter Block 2 Name DE</name>
+					<name xml:lang="en-US">Parameter Block 2 Name US</name>
+					<parameters>
+						<parameter>
+							<name xml:lang="de-DE">Parameter 3 DE</name>
+							<name xml:lang="en-US">Parameter 3 US</name>
+						</parameter>
+						<parameter>
+							<name xml:lang="de-DE">Parameter 4 DE</name>
+							<name xml:lang="en-US">Parameter 4 US</name>
+						</parameter>
+					</parameters>
+				</parameterBlock>
+			</parameterBlocks>
+		</channel>
+		<channel>
+			<name xml:lang="de-DE">Channel 2 Name DE</name>
+			<name xml:lang="en-US">Channel 2 Name US</name>
+			<parameterBlocks>
+				<parameterBlock>
+					<name xml:lang="de-DE">Parameter Block 3 Name DE</name>
+					<name xml:lang="en-US">Parameter Block 3 Name US</name>
+					<parameters>
+						<parameter>
+							<name xml:lang="de-DE">Parameter 5 DE</name>
+							<name xml:lang="en-US">Parameter 5 US</name>
+						</parameter>
+						<parameterSeparator>
+							<text xml:lang="de-DE">Separator Text DE</text>
+							<text xml:lang="en-US">Separator Text US</text>
+						</parameterSeparator>
+						<parameter>
+							<name xml:lang="de-DE">Parameter 6 DE</name>
+							<name xml:lang="en-US">Parameter 6 US</name>
+						</parameter>
+						<parameterSeparator />
+						<parameter>
+							<name xml:lang="de-DE">Parameter 7 DE</name>
+							<name xml:lang="en-US">Parameter 7 US</name>
+						</parameter>
+					</parameters>
+				</parameterBlock>
+			</parameterBlocks>
+		</channel>
+	</channels>
+	<comObjects>
+		<comObject>
+			<name xml:lang="de-DE">Object 1 Name DE</name>
+			<name xml:lang="en-US">Object 1 Name US</name>
+			<function xml:lang="de-DE">Object 1 Function DE</function>
+			<function xml:lang="en-US">Object 1 Function US</function>
+		</comObject>
+		<comObject>
+			<name xml:lang="de-DE">Object 2 Name DE</name>
+			<name xml:lang="en-US">Object 2 Name US</name>
+			<function xml:lang="de-DE">Object 2 Function DE</function>
+			<function xml:lang="en-US">Object 2 Function US</function>
+		</comObject>
+		<comObject>
+			<name xml:lang="de-DE">Object 3 Name DE</name>
+			<name xml:lang="en-US">Object 3 Name US</name>
+			<function xml:lang="de-DE">Object 3 Function DE</function>
+			<function xml:lang="en-US">Object 3 Function US</function>
+		</comObject>
+	</comObjects>
+</device>
