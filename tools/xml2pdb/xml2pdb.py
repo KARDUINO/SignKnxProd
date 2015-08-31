@@ -444,7 +444,7 @@ def createProduct(srcRootXML):
 					addTranslations(languagesXML, srcEntryXML.findall("name"), applicationProgramId, parameterId, "Text")
 					# According to spec: SuffixText. Missing?
 					parameterXML.set("Access", "ReadWrite")
-					parameterXML.set("Value", "60")
+					parameterXML.set("Value", srcEntryXML.get("default"))
 					# According to spec: Patch Always. Missing?
 					# According to spec: Unique Number. Missing?
 					
@@ -575,6 +575,9 @@ def createProduct(srcRootXML):
 	associationTableXML.set("CodeSegment", applicationProgramId + "_AS-4193")
 	associationTableXML.set("Offset", "0")
 	associationTableXML.set("MaxEntries", "200")
+
+	optionsXML.set("TextParameterEncodingSelector", "UseTextParameterEncodingCodePage")
+	optionsXML.set("TextParameterEncoding", "utf-8")
 
 	#chooseXML = ET.SubElement(parameterBlockXML, "choose")
 	#chooseXML.set("ParamRefId", parameterRefId)
