@@ -340,24 +340,107 @@ def createProduct(srcRootXML):
 					parameterTypeXML.set("Name", parameterTypeName)
 					parameterTypeXML.set("Plugin", "")
 					
-					#typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
-					#typeRestrictionXML.set("Base", "Value")
-					#typeRestrictionXML.set("SizeInBit", "8")
-					
-					#enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
-					#enumerationXML.set("Id", "")
-					#enumerationXML.set("DisplayOrder", "")
-					#enumerationXML.set("Text", "")
-					#enumerationXML.set("Value", "")
-					
-					typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
-					typeNumberXML.set("SizeInBit", "8")
-					typeNumberXML.set("Type", "unsignedInt")
-					typeNumberXML.set("minInclusive", "0")
-					typeNumberXML.set("maxInclusive", "100")
-					typeNumberXML.set("SizeInBit", "8")
-					# According to spec: UIHint. Missing?
-					
+					type = srcEntryXML.get("type")
+						
+					if (type == "unsignedInt") | (type == "signedInt"):
+						sizeInBit = srcEntryXML.get("sizeInBit")
+
+						typeNumberXML = ET.SubElement(parameterTypeXML, "TypeNumber")
+						typeNumberXML.set("SizeInBit", sizeInBit)
+						
+						minInclusive = srcEntryXML.get("minInclusive")
+						maxInclusive = srcEntryXML.get("maxInclusive")
+
+						if (type == "unsignedInt"):
+							if minInclusive is None:
+								minInclusive = "0"
+
+							if maxInclusive is None:
+								maxInclusive = str((1 << int(sizeInBit)) - 1)
+
+							typeNumberXML.set("Type", "unsignedInt")
+						else:
+							if minInclusive is None:
+								minInclusive = "-" + str(1 << (int(sizeInBit) - 1))
+
+							if maxInclusive is None:
+								maxInclusive = str((1 << (int(sizeInBit) - 1)) - 1)
+
+							typeNumberXML.set("Type", "signedInt")
+
+						typeNumberXML.set("minInclusive", minInclusive)
+						typeNumberXML.set("maxInclusive", maxInclusive)
+						
+						if srcEntryXML.get("uiHint") is not None:
+							typeNumberXML.set("UIHint", srcEntryXML.get("uiHint"))
+					elif type == "float":
+						typeFloatXML = ET.SubElement(parameterTypeXML, "TypeFloat")
+
+						sizeInBit = srcEntryXML.get("sizeInBit");
+						minInclusive = srcEntryXML.get("minInclusive")
+						maxInclusive = srcEntryXML.get("maxInclusive")
+
+						if sizeInBit == "16":
+							encoding = "DPT 9"
+
+							if minInclusive is None:
+								minInclusive = "-671088.64"
+		
+							if maxInclusive is None:
+								maxInclusive = "670760.96"
+
+						elif sizeInBit == "32":
+							encoding = "IEEE-754 Single"
+
+							if minInclusive is None:
+								minInclusive = "1.175e-38"
+
+							if maxInclusive is None:
+								maxInclusive = "3.4028235e+38"
+
+						elif sizeInBit == "64":
+							encoding = "IEEE-754 Double"
+
+							if minInclusive is None:
+								minInclusive = "2.2251e-308"
+							
+							if maxInclusive is None:
+								maxInclusive = "1.798e308"
+						else:
+							print "Unkown sizeInBit: " + sizeInBit
+								
+						typeFloatXML.set("Encoding", encoding)
+						typeFloatXML.set("minInclusive", minInclusive)
+						typeFloatXML.set("maxInclusive", maxInclusive)
+
+						if srcEntryXML.get("uiHint") is not None:
+							typeFloatXML.set("UIHint", srcEntryXML.get("uiHint"))
+					elif type == "text":
+						typeTextXML = ET.SubElement(parameterTypeXML, "TypeText")
+						typeTextXML.set("SizeInBit", srcEntryXML.get("sizeInBit"))
+
+						if srcEntryXML.get("pattern") is not None:
+							typeTextXML.set("Pattern", srcEntryXML.get("pattern"))
+					elif type == "enumeration":
+						typeRestrictionXML = ET.SubElement(parameterTypeXML, "TypeRestriction")
+						typeRestrictionXML.set("Base", "Value")
+						typeRestrictionXML.set("SizeInBit", srcEntryXML.get("sizeInBit"))
+							
+						srcEntriesXML = srcEntryXML.find("entries")
+							
+						for srcListEntryXML in srcEntriesXML:
+							enumerationValue = srcListEntryXML.get("value")
+							enumerationId = parameterTypeId + "_EN-%s" % enumerationValue
+							enumerationXML = ET.SubElement(typeRestrictionXML, "Enumeration")
+							enumerationXML.set("Id", enumerationId)
+							# Obsolete! enumerationXML.set("DisplayOrder", "")
+							enumerationXML.set("Text", srcListEntryXML.find("name").text)
+							addTranslations(languagesXML, srcListEntryXML.findall("name"), applicationProgramId, enumerationId, "Text")
+							enumerationXML.set("Value", enumerationValue)
+					else:
+						print type
+
+
 					parameterIdx = parameterIdx + 1
 					parameterId = applicationProgramId + "_P-%d" % parameterIdx
 					parameterXML = ET.SubElement(parametersXML, "Parameter")
@@ -368,7 +451,7 @@ def createProduct(srcRootXML):
 					addTranslations(languagesXML, srcEntryXML.findall("name"), applicationProgramId, parameterId, "Text")
 					# According to spec: SuffixText. Missing?
 					parameterXML.set("Access", "ReadWrite")
-					parameterXML.set("Value", "60")
+					parameterXML.set("Value", srcEntryXML.get("default"))
 					# According to spec: Patch Always. Missing?
 					# According to spec: Unique Number. Missing?
 					
@@ -499,6 +582,9 @@ def createProduct(srcRootXML):
 	associationTableXML.set("CodeSegment", applicationProgramId + "_AS-4193")
 	associationTableXML.set("Offset", "0")
 	associationTableXML.set("MaxEntries", "200")
+
+	optionsXML.set("TextParameterEncodingSelector", "UseTextParameterEncodingCodePage")
+	optionsXML.set("TextParameterEncoding", "utf-8")
 
 	#chooseXML = ET.SubElement(parameterBlockXML, "choose")
 	#chooseXML.set("ParamRefId", parameterRefId)
